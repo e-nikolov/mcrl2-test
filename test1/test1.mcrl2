@@ -1,0 +1,6 @@
+act a, b, c, d;
+
+proc X = a . d + a . (b + c);
+
+init X;
+ 
