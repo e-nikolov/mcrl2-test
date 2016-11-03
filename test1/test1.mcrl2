@@ -1,6 +1,36 @@
+sort State = struct s1 | s2 | s3;
+
+
 act a, b, c, d;
+	getSomething : State;
+	doSomething : State;
+	doSomethingElse;
+	continue;
 
-proc X = a . d + a . (b + c);
 
-init X;
- 
+proc X = 
+	sum state : State 
+	.
+	Y(state)
+	. doSomethingElse . X;
+
+proc Y(state : State) = 
+	getSomething(state) 
+	.
+	(
+		(state == s1)
+		-> 	doSomething(state)
+		<> 	continue
+	);
+
+init hide({continue},
+  allow(
+    {
+    	a,b,c,d,getSomething, doSomething, doSomethingElse, continue
+
+    },
+    comm(
+      {
+      },
+      X
+  )));

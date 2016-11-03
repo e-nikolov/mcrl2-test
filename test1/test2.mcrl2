@@ -1,0 +1,61 @@
+sort    D = struct d1 | d2 | d3;
+        Queue = List(D);
+
+map     push : D # Queue -> Queue;
+        pop  : Queue -> Queue;
+        empty : Queue -> Bool;
+        top : Queue -> D;
+        drop : Nat # Queue -> Queue;
+        len : Queue -> Nat;
+
+var     d, d' : D;
+        q : Queue;
+        i : Nat;
+
+
+
+eqn     
+        push(d, q) = d |> q;
+
+        pop(q) = rtail(q);
+
+        empty([]) = true;
+        empty(d |> q) = false;
+
+        top(q) = rhead(q);
+        drop(i, []) = [];
+        drop(0, d |> q) = q;
+        (i > 0) -> drop(i, d |> q) = d |> drop(Int2Nat(Nat2Int(i)-1), q);
+        len(q) = #q;
+
+
+act     r, s : D;
+        i : Nat;
+        reset, info;
+        size : Nat;
+        continue;
+        test : Queue;
+
+
+
+
+proc Q(q : Queue) = 
+    test(q) . Q(q)
+    + (len(q) < 5) -> sum d : D . r(d) . Q(push(d, q))
+    + (!empty(q)) -> s(top(q)) . Q(pop(q))
+    + sum n : Nat . (n < 6) -> (i(n) . Q(drop(n, q)))
+    + reset . Q([])
+    + info . size(len(q)) . Q(q)
+    ;
+
+
+init hide({continue},
+  allow(
+    {
+        r, s, i, reset, info, size, test
+    },
+    comm(
+      {
+      },
+      Q([])
+  )));
